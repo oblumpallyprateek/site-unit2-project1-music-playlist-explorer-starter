@@ -1,10 +1,25 @@
 ## Music Playlist Explorer — Planning Spec
 
-### Data Shape
+### Data Shape (Data Schema)
 [Leave blank — fill in before Milestone 3]
 
+**Playlist Object:**
+- id (string) — unique identifier for the playlist
+- title (string) — the name of the playlist
+- creator (string) — the person who created the playlist
+- coverImg (string) — path to the playlist cover image
+- likes (number) — the number of likes the playlist has
+- songs (array) — array of song objects in the playlist
+
+**Song Object:**
+- title (string) — the name of the song
+- artist (string) — the artist who performs the song
+- album (string) — the album the song is from
+- duration (string) — the length of the song in mm:ss format
+
+
+
 ### UI and Interaction Rules
-[Leave blank — fill in before Milestone 1]
 
 There are three main sections of the homepage which include the header, content area, and footer. 
 
