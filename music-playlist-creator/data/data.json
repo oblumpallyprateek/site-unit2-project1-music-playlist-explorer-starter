@@ -1,0 +1,139 @@
+{
+    "playlists": [
+      {
+        "id": "1",
+        "title": "My Playlist",
+        "creator": "Prateek",
+        "coverImg": "assets/img/playlist.png",
+        "likes": 42,
+        "isLikedByUser": false,
+        "songs": [
+          {
+            "title": "Locked out of Heaven",
+            "artist": "Bruno Mars",
+            "album": "Unorthodox Jukebox",
+            "duration": "3:52"
+          },
+          {
+            "title": "Chicago",
+            "artist": "Michael Jackson",
+            "album": "HIStory",
+            "duration": "4:00"
+          },
+          {
+            "title": "Losing It",
+            "artist": "Fisher",
+            "album": "Losing It",
+            "duration": "4:07"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "title": "Workout Jams",
+        "creator": "Fitness Guru",
+        "coverImg": "assets/img/playlist.png",
+        "likes": 89,
+        "isLikedByUser": false,
+        "songs": [
+          {
+            "title": "Eye of the Tiger",
+            "artist": "Survivor",
+            "album": "Eye of the Tiger",
+            "duration": "4:04"
+          },
+          {
+            "title": "Stronger",
+            "artist": "Kanye West",
+            "album": "Graduation",
+            "duration": "5:11"
+          },
+          {
+            "title": "Till I Collapse",
+            "artist": "Eminem",
+            "album": "The Eminem Show",
+            "duration": "4:57"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "title": "Chill Vibes",
+        "creator": "DJ Smooth",
+        "coverImg": "assets/img/playlist.png",
+        "likes": 156,
+        "isLikedByUser": false,
+        "songs": [
+          {
+            "title": "Sunset Dreams",
+            "artist": "The Mellows",
+            "album": "Summer Nights",
+            "duration": "3:45"
+          },
+          {
+            "title": "Ocean Waves",
+            "artist": "Beach Sounds",
+            "album": "Coastal Collection",
+            "duration": "4:12"
+          },
+          {
+            "title": "Morning Coffee",
+            "artist": "Jazz Collective",
+            "album": "Cafe Vibes",
+            "duration": "3:28"
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "title": "Study Focus",
+        "creator": "Brain Boost",
+        "coverImg": "assets/img/playlist.png",
+        "likes": 203,
+        "isLikedByUser": false,
+        "songs": [
+          {
+            "title": "Classical Study",
+            "artist": "Mozart",
+            "album": "Greatest Hits",
+            "duration": "5:30"
+          },
+          {
+            "title": "Lo-Fi Beats",
+            "artist": "Chillhop Music",
+            "album": "Study Session",
+            "duration": "3:15"
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "title": "Party Hits",
+        "creator": "DJ Party",
+        "coverImg": "assets/img/playlist.png",
+        "likes": 312,
+        "isLikedByUser": false,
+        "songs": [
+          {
+            "title": "Uptown Funk",
+            "artist": "Mark Ronson ft. Bruno Mars",
+            "album": "Uptown Special",
+            "duration": "4:30"
+          },
+          {
+            "title": "Can't Stop the Feeling",
+            "artist": "Justin Timberlake",
+            "album": "Trolls Soundtrack",
+            "duration": "3:56"
+          },
+          {
+            "title": "Happy",
+            "artist": "Pharrell Williams",
+            "album": "Girl",
+            "duration": "3:53"
+          }
+        ]
+      }
+    ]
+  }
+  

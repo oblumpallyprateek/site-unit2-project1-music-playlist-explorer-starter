@@ -175,3 +175,35 @@ footer p {
     font-size: 16px;
 }
 
+/* Like icon styling */
+.like-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.like-icon {
+    font-size: 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s;
+}
+
+.like-icon.unliked {
+    color: #999;
+}
+
+.like-icon.liked {
+    color: #ff0000;
+}
+
+.like-icon:hover {
+    transform: scale(1.2);
+}
+
+.like-count {
+    font-size: 14px;
+    color: #666;
+}
+
