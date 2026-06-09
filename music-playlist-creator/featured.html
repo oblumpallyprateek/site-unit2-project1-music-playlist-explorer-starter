@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Featured Playlist - Music Playlist Explorer</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Music Playlist Explorer</h1>
+        <nav class="nav-bar">
+            <a href="index.html">All Playlists</a>
+            <a href="featured.html" class="active">Featured</a>
+        </nav>
+    </header>
+
+    <main class="featured-main">
+        <div class="featured-container">
+            <div class="featured-left">
+                <img id="featured-img" src="" alt="Featured Playlist Cover">
+                <h2 id="featured-title"></h2>
+                <p id="featured-creator"></p>
+                <p id="featured-likes"></p>
+            </div>
+            
+            <div class="featured-right">
+                <h3>Songs:</h3>
+                <ul id="featured-songs">
+                    <!-- Songs will be added dynamically -->
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Music Playlist Explorer 2026</p>
+    </footer>
+
+    <script src="data/data.js"></script>
+    <script src="script.js"></script>
+    
+</body>
+</html>

@@ -207,3 +207,102 @@ footer p {
     color: #666;
 }
 
+/* Navigation Bar */
+.nav-bar {
+    margin-top: 15px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.nav-bar a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.nav-bar a:hover {
+    background-color: #555;
+}
+
+.nav-bar a.active {
+    background-color: #1db954;
+}
+
+/* Featured Page Layout */
+.featured-main {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.featured-container {
+    display: flex;
+    gap: 40px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.featured-left {
+    flex: 1;
+    text-align: center;
+}
+
+.featured-left img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.featured-left h2 {
+    font-size: 28px;
+    margin: 10px 0;
+}
+
+.featured-left p {
+    color: #666;
+    margin: 5px 0;
+}
+
+.featured-right {
+    flex: 1;
+}
+
+.featured-right h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+#featured-songs {
+    list-style: none;
+    padding: 0;
+}
+
+#featured-songs li {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+#featured-songs li:last-child {
+    border-bottom: none;
+}
+
+#featured-songs p {
+    margin: 3px 0;
+}
+
+#featured-songs strong {
+    font-size: 16px;
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 768px) {
+    .featured-container {
+        flex-direction: column;
+    }
+}

@@ -1,7 +1,6 @@
 ## Music Playlist Explorer — Planning Spec
 
 ### Data Shape (Data Schema)
-[Leave blank — fill in before Milestone 3]
 
 **Playlist Object:**
 - id (string) — unique identifier for the playlist
@@ -17,8 +16,6 @@
 - album (string) — the album the song is from
 - duration (string) — the length of the song in mm:ss format
 
-
-
 ### UI and Interaction Rules
 
 There are three main sections of the homepage which include the header, content area, and footer. 
@@ -29,12 +26,9 @@ If a user clicks outside the modal it will close the model and return the user t
 
 The like count will increase by 1 if the playlist is not liked yet and will decrease by one if it already is liked. 
 
-The shuffle button will randomly reorder the songs in the playlists. The button will be temporary.  
-
-
+The shuffle button will randomly reorder the songs in the playlists. The button will be temporary.
 
 ### Function Specs
-[Add function specs here as you plan each milestone]
 
 **renderPlaylistCards()**
 - **Purpose:** Dynamically creates and displays playlist cards from data
@@ -97,42 +91,32 @@ The shuffle button will randomly reorder the songs in the playlists. The button 
     - Sets playlist.isLikedByUser to false
 - **Constraint:** User can only like each playlist once at a time; toggling switches between liked and unliked states
 
-🎯 Goal
-The goal of this milestone is to add functionality to shuffle the songs within a playlist when the user clicks a shuffle button in the playlist detail modal.
+**shuffleSongs(playlist)**
+- **Purpose:** Randomly reorders the songs in a playlist and updates the modal display
+- **Inputs:** playlist (object) - the playlist whose songs should be shuffled
+- **Returns:** Nothing (modifies playlist data and DOM)
+- **Side Effects:**
+  - Creates a shuffled copy of playlist.songs array using Fisher-Yates algorithm
+  - Does NOT preserve original song order (each shuffle is independent)
+  - Updates playlist.songs array with the new shuffled order
+  - Re-renders the song list in the modal with the new order
+- **Original Order:** Not preserved - playlist data is permanently modified until page reload
+- **Multi-Shuffle Behavior:** Each click produces a new random order from the current order
+- **UI Result:** Song list in modal displays in the new shuffled order immediately
 
-Specifying What "Shuffled" Means
-Shuffle sounds simple, but there are a few decisions worth making explicitly before you implement it. Does the original song order need to be preserved anywhere so the user can get back to it? What does "shuffled" mean for the UI — does the list re-render in place? What should happen if the user clicks shuffle multiple times? Answering these questions in your spec before writing any code will save you from discovering them mid-implementation.
-
-💻 Your Turn
-Add a Shuffle Button to the Modal
-
-Modify the HTML structure of the playlist modal to include a shuffle button. A simple button element with the text "Shuffle" works fine.
-Style the Shuffle Button
-
-In style.css, add styles for the shuffle button so it is visually distinct and changes appearance when hovered or clicked.
-Write a Spec for the Shuffle Function
-
-Add a function spec for your shuffle function to planning.md. Your spec should answer:
-What does this function take in?
-What does it return?
-Should the original song order be preserved anywhere, and if so, how?
-What does the UI look like after shuffling?
-What should happen when the user clicks shuffle multiple times?
-Implement Shuffle Functionality
-
-In script.js, write a function that takes an array of songs and returns them in a randomized order, using the spec you just wrote as your guide.
-Add an event listener to the shuffle button that calls your shuffle function with the current playlist's songs and updates the displayed song list in the modal.
-Ensure the shuffled order is reflected in the modal view.
-Once your function is working, open the Claude Chat panel, provide your implementation, and reference your planning.md with @. Ask Claude to confirm whether the implementation matches your spec. Pay particular attention to whether the original order behavior and the multi-shuffle behavior match what you defined.
-📍 Checkpoint
-Before moving on to Milestone 7, make sure:
-
-Each playlist modal has a shuffle button that users can click.
-Clicking the shuffle button rearranges the order of songs in the modal view.
-Clicking shuffle multiple times continues to produce a different order.
-You wrote a function spec that addresses original order preservation and multi-shuffle behavior before implementing.
-You validated your implementation against your spec using Claude.
-
+**getPlaylistDescription(playlist)**
+- **Purpose:** Generates an AI-powered description of a playlist using the OpenRouter API
+- **Inputs:** playlist (object) - the playlist object containing title, creator, and songs
+- **Returns:** Promise<string> - the AI-generated description text, or an error message if the call fails
+- **API Called:** OpenRouter API (https://openrouter.ai/api/v1/chat/completions)
+- **Prompt Structure:**
+  - System message: Defines the AI's role as a music curator
+  - User message: Provides playlist title, creator, and song list with instructions to generate a 2-3 sentence description
+- **Error Handling:**
+  - Network/API errors: Returns "Unable to generate description. Please try again later."
+  - Empty/invalid response: Returns "Description unavailable."
+  - Console logs errors for debugging
+- **Side Effects:** Makes an external API call to OpenRouter
 
 ### Featured Page
 
@@ -158,12 +142,33 @@ The Featured page displays a single randomly selected playlist with:
 - Links allow users to switch between pages without browser back/forward buttons
 - Navigation persists across both pages for consistent UX
 
-
-
-
-
 ### AI Feature Spec (Milestone 8)
-[Leave blank — fill in before Milestone 8]
+
+**Role:** You are a music curator and playlist expert who understands musical themes, vibes, and genres.
+
+**Task:** Generate a 2-3 sentence description for a music playlist that captures its overall vibe, theme, and mood based on the playlist name, creator, and song list.
+
+**Inputs:**
+- Playlist title (string)
+- Playlist creator (string)
+- List of songs with title and artist (array of objects)
+
+**Output Format:**
+- 2-3 sentences that describe the playlist's vibe, theme, and mood
+- Should be engaging and descriptive without being generic marketing language
+- Should NOT list individual songs
+- Should capture the overall feeling someone would get from listening to this playlist
+
+**Constraints:**
+- Do not list songs individually (e.g., avoid "This playlist includes...")
+- Avoid generic phrases like "perfect for any occasion" or "you'll love this"
+- Focus on mood, genre, energy level, and use case
+- Keep it concise (2-3 sentences maximum)
+
+**Failure Behavior:**
+- If API call fails: Display "Unable to generate description. Please try again later."
+- If model returns empty/invalid response: Display "Description unavailable."
+- Show loading message "Generating description..." while API call is in progress
 
 ### Decisions Log
 [One entry per milestone where you make spec-informed decisions]

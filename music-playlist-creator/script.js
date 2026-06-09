@@ -1,7 +1,16 @@
 // Store current playlist for shuffle functionality
 let currentPlaylist = null;
 
-// Fetch and render playlist cards
+// Check which page we're on and run appropriate code
+if (document.querySelector('.playlist-cards')) {
+  // We're on index.html (All Playlists page)
+  renderPlaylistCards();
+} else if (document.querySelector('.featured-container')) {
+  // We're on featured.html (Featured page)
+  displayFeaturedPlaylist();
+}
+
+// Fetch and render playlist cards (for index.html)
 async function renderPlaylistCards() {
   try {
     // Fetch data from data.json
@@ -63,6 +72,57 @@ async function renderPlaylistCards() {
     console.error('Error loading playlists:', error);
     document.querySelector('.playlist-cards').innerHTML = '<p>Error loading playlists.</p>';
   }
+}
+
+// Display featured playlist (for featured.html)
+async function displayFeaturedPlaylist() {
+  try {
+    // Fetch data from data.json
+    const response = await fetch('data/data.json');
+    const data = await response.json();
+    const playlists = data.playlists;
+    
+    // Check if playlists exist
+    if (!playlists || playlists.length === 0) {
+      document.querySelector('.featured-container').innerHTML = '<p>No playlists available.</p>';
+      return;
+    }
+    
+    // Select a random playlist
+    const randomPlaylist = selectRandomPlaylist(playlists);
+    
+    // Update the featured page with playlist details
+    document.getElementById('featured-img').src = randomPlaylist.coverImg;
+    document.getElementById('featured-img').alt = randomPlaylist.title + ' Cover';
+    document.getElementById('featured-title').textContent = randomPlaylist.title;
+    document.getElementById('featured-creator').textContent = 'By ' + randomPlaylist.creator;
+    document.getElementById('featured-likes').textContent = 'Likes: ' + randomPlaylist.likes;
+    
+    // Display songs
+    const songList = document.getElementById('featured-songs');
+    songList.innerHTML = '';
+    
+    randomPlaylist.songs.forEach(song => {
+      const listItem = document.createElement('li');
+      listItem.innerHTML = `
+        <p><strong>${song.title}</strong></p>
+        <p>Artist: ${song.artist}</p>
+        <p>Album: ${song.album}</p>
+        <p>Duration: ${song.duration}</p>
+      `;
+      songList.appendChild(listItem);
+    });
+    
+  } catch (error) {
+    console.error('Error loading featured playlist:', error);
+    document.querySelector('.featured-container').innerHTML = '<p>Error loading playlist.</p>';
+  }
+}
+
+// Select a random playlist from array
+function selectRandomPlaylist(playlists) {
+  const randomIndex = Math.floor(Math.random() * playlists.length);
+  return playlists[randomIndex];
 }
 
 // Toggle like state for a playlist
@@ -161,22 +221,26 @@ function closeModal() {
   modal.style.display = 'none';
 }
 
-// Call the function when page loads
-renderPlaylistCards();
+// Event listeners (only add if elements exist)
+if (document.querySelector('.modal-overlay')) {
+  // Close modal when clicking on overlay (outside modal content)
+  document.querySelector('.modal-overlay').addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal-overlay')) {
+      closeModal();
+    }
+  });
+}
 
-// Close modal when clicking on overlay (outside modal content)
-document.querySelector('.modal-overlay').addEventListener('click', (e) => {
-  if (e.target.classList.contains('modal-overlay')) {
-    closeModal();
-  }
-});
+if (document.querySelector('.close-btn')) {
+  // Close modal when clicking close button
+  document.querySelector('.close-btn').addEventListener('click', closeModal);
+}
 
-// Close modal when clicking close button
-document.querySelector('.close-btn').addEventListener('click', closeModal);
-
-// Shuffle button functionality
-document.querySelector('.shuffle-btn').addEventListener('click', () => {
-  if (currentPlaylist) {
-    shuffleSongs(currentPlaylist);
-  }
-});
+if (document.querySelector('.shuffle-btn')) {
+  // Shuffle button functionality
+  document.querySelector('.shuffle-btn').addEventListener('click', () => {
+    if (currentPlaylist) {
+      shuffleSongs(currentPlaylist);
+    }
+  });
+}
