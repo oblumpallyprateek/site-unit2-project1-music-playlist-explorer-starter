@@ -1,6 +1,11 @@
 // Store current playlist for shuffle functionality
 let currentPlaylist = null;
 
+// API Configuration - IMPORTANT: Add your own OpenRouter API key here before running
+const API_KEY = 'YOUR_OPENROUTER_API_KEY_HERE'; // Get your free key at https://openrouter.ai/keys
+const SYSTEM_PROMPT = 'You are a music curator and playlist expert who understands musical themes, vibes, and genres.';
+const FAILURE_MESSAGE = 'Unable to generate description. Please try again later.';
+
 // Check which page we're on and run appropriate code
 if (document.querySelector('.playlist-cards')) {
   // We're on index.html (All Playlists page)
@@ -171,6 +176,55 @@ function shuffleSongs(playlist) {
   });
 }
 
+// Get AI-generated playlist description
+async function getPlaylistDescription(playlist) {
+  try {
+    // Build the song list for the prompt
+    const songList = playlist.songs
+      .map(song => `${song.title} by ${song.artist}`)
+      .join(', ');
+    
+    const userPrompt = `Generate a 2-3 sentence description for this playlist:
+            
+Title: ${playlist.title}
+Creator: ${playlist.creator}
+Songs: ${songList}
+
+Describe the playlist's vibe, theme, and mood. Do NOT list individual songs. Avoid generic phrases. Focus on the overall feeling and use case.`;
+    
+    // Construct the API request
+    const response = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemma-4-31b-it:free",
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: userPrompt },
+          ],
+        }),
+      }
+    );
+    
+    if (!response.ok) {
+      return FAILURE_MESSAGE;
+    }
+    
+    const data = await response.json();
+    const summary = data.choices[0].message.content.trim();
+    
+    return summary || FAILURE_MESSAGE;
+  } catch (err) {
+    console.error("getPlaylistDescription failed:", err);
+    return FAILURE_MESSAGE;
+  }
+}
+
 // Populate modal with playlist details
 function populateModal(playlist) {
   // Update modal cover image
@@ -189,6 +243,13 @@ function populateModal(playlist) {
   // Update modal likes (second <p> tag)
   const modalLikes = document.querySelector('.modal-content p:nth-of-type(2)');
   modalLikes.textContent = 'Likes: ' + playlist.likes;
+  
+  // Clear AI description
+  const aiDescription = document.querySelector('.ai-description');
+  if (aiDescription) {
+    aiDescription.textContent = '';
+    aiDescription.className = 'ai-description';
+  }
   
   // Clear existing songs
   const songList = document.querySelector('.modal-content ul');
@@ -209,7 +270,7 @@ function populateModal(playlist) {
 
 // Open the modal
 function openModal(playlist) {
-  currentPlaylist = playlist; // Store current playlist for shuffle
+  currentPlaylist = playlist; // Store current playlist for shuffle and AI
   populateModal(playlist);
   const modal = document.querySelector('.modal-overlay');
   modal.style.display = 'flex';
@@ -244,3 +305,28 @@ if (document.querySelector('.shuffle-btn')) {
     }
   });
 }
+
+if (document.querySelector('.ai-description-btn')) {
+  // AI Description button functionality
+  document.querySelector('.ai-description-btn').addEventListener('click', async () => {
+    if (!currentPlaylist) return;
+    
+    const aiDescription = document.querySelector('.ai-description');
+    
+    // Show loading state
+    aiDescription.textContent = 'Generating description...';
+    aiDescription.className = 'ai-description loading';
+    
+    // Get description from AI
+    const description = await getPlaylistDescription(currentPlaylist);
+    
+    // Display the description
+    if (description === FAILURE_MESSAGE) {
+      aiDescription.className = 'ai-description error';
+    } else {
+      aiDescription.className = 'ai-description';
+    }
+    aiDescription.textContent = description;
+  });
+}
+
