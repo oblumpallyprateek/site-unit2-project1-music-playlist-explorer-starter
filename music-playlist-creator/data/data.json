@@ -4,8 +4,8 @@
         "id": "1",
         "title": "My Playlist",
         "creator": "Prateek",
-        "coverImg": "assets/img/playlist.png",
-        "likes": 42,
+        "coverImg": "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=400&h=400&fit=crop",
+        "likes": 0,
         "isLikedByUser": false,
         "songs": [
           {
@@ -32,7 +32,7 @@
         "id": "2",
         "title": "Workout Jams",
         "creator": "Fitness Guru",
-        "coverImg": "assets/img/playlist.png",
+        "coverImg": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=400&fit=crop",
         "likes": 89,
         "isLikedByUser": false,
         "songs": [
@@ -60,7 +60,7 @@
         "id": "3",
         "title": "Chill Vibes",
         "creator": "DJ Smooth",
-        "coverImg": "assets/img/playlist.png",
+        "coverImg": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=400&fit=crop",
         "likes": 156,
         "isLikedByUser": false,
         "songs": [
@@ -88,7 +88,7 @@
         "id": "4",
         "title": "Study Focus",
         "creator": "Brain Boost",
-        "coverImg": "assets/img/playlist.png",
+        "coverImg": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=400&h=400&fit=crop",
         "likes": 203,
         "isLikedByUser": false,
         "songs": [
@@ -110,7 +110,7 @@
         "id": "5",
         "title": "Party Hits",
         "creator": "DJ Party",
-        "coverImg": "assets/img/playlist.png",
+        "coverImg": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop",
         "likes": 312,
         "isLikedByUser": false,
         "songs": [

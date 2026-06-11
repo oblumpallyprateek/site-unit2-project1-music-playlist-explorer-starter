@@ -1,109 +1,306 @@
+// Import API configuration
+import { API_KEY, SYSTEM_PROMPT, FAILURE_MESSAGE } from './config.js';
+
 // Store current playlist for shuffle functionality
 let currentPlaylist = null;
-
-// API Configuration - IMPORTANT: Add your own OpenRouter API key here before running
-const API_KEY = 'YOUR_OPENROUTER_API_KEY_HERE'; // Get your free key at https://openrouter.ai/keys
-const SYSTEM_PROMPT = 'You are a music curator and playlist expert who understands musical themes, vibes, and genres.';
-const FAILURE_MESSAGE = 'Unable to generate description. Please try again later.';
+let allPlaylists = []; // Store all playlists
+let filteredPlaylists = []; // Store filtered/sorted playlists
+let editingPlaylistId = null; // Track which playlist is being edited
 
 // Check which page we're on and run appropriate code
 if (document.querySelector('.playlist-cards')) {
   // We're on index.html (All Playlists page)
-  renderPlaylistCards();
+  loadPlaylists();
 } else if (document.querySelector('.featured-container')) {
   // We're on featured.html (Featured page)
   displayFeaturedPlaylist();
 }
 
-// Fetch and render playlist cards (for index.html)
-async function renderPlaylistCards() {
+// Load playlists from data.json
+async function loadPlaylists() {
   try {
-    // Fetch data from data.json
     const response = await fetch('data/data.json');
     const data = await response.json();
-    const playlists = data.playlists;
-    
-    // Get the container
-    const container = document.querySelector('.playlist-cards');
-    
-    // Clear existing cards (remove hard-coded card)
-    container.innerHTML = '';
-    
-    // Check if playlists exist
-    if (!playlists || playlists.length === 0) {
-      container.innerHTML = '<p>No playlists found.</p>';
-      return;
-    }
-    
-    // Create a card for each playlist
-    playlists.forEach(playlist => {
-      const card = document.createElement('div');
-      card.className = 'playlist-card';
-      
-      // Determine if playlist is liked
-      const likedClass = playlist.isLikedByUser ? 'liked' : 'unliked';
-      
-      card.innerHTML = `
-        <img src="${playlist.coverImg}" alt="${playlist.title} Cover">
-        <h3>${playlist.title}</h3>
-        <p>By ${playlist.creator}</p>
-        <div class="like-container">
-          <span class="like-icon ${likedClass}">♥</span>
-          <span class="like-count">${playlist.likes}</span>
-        </div>
-      `;
-      
-      container.appendChild(card);
-      
-      // Get like elements
-      const likeIcon = card.querySelector('.like-icon');
-      const likeCountElement = card.querySelector('.like-count');
-      
-      // Add click event to like icon
-      likeIcon.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent card click from opening modal
-        toggleLike(playlist, likeIcon, likeCountElement);
-      });
-      
-      // Add click event to open modal (but not when clicking like icon)
-      card.addEventListener('click', (e) => {
-        if (!e.target.classList.contains('like-icon')) {
-          openModal(playlist);
-        }
-      });
-    });
-    
+    allPlaylists = data.playlists;
+    filteredPlaylists = [...allPlaylists];
+    renderPlaylistCards(filteredPlaylists);
+    setupEventListeners();
   } catch (error) {
     console.error('Error loading playlists:', error);
     document.querySelector('.playlist-cards').innerHTML = '<p>Error loading playlists.</p>';
   }
 }
 
+// Render playlist cards
+function renderPlaylistCards(playlists) {
+  const container = document.querySelector('.playlist-cards');
+  container.innerHTML = '';
+  
+  if (!playlists || playlists.length === 0) {
+    container.innerHTML = '<p>No playlists found.</p>';
+    return;
+  }
+  
+  playlists.forEach(playlist => {
+    const card = document.createElement('div');
+    card.className = 'playlist-card';
+    
+    const likedClass = playlist.isLikedByUser ? 'liked' : 'unliked';
+    
+    card.innerHTML = `
+      <button class="delete-btn" data-id="${playlist.id}" title="Delete Playlist">×</button>
+      <button class="edit-btn" data-id="${playlist.id}" title="Edit Playlist">✎</button>
+      <img src="${playlist.coverImg}" alt="${playlist.title} Cover">
+      <h3>${playlist.title}</h3>
+      <p>By ${playlist.creator}</p>
+      <div class="like-container">
+        <span class="like-icon ${likedClass}">♥</span>
+        <span class="like-count">${playlist.likes}</span>
+      </div>
+    `;
+    
+    container.appendChild(card);
+    
+    // Get elements
+    const likeIcon = card.querySelector('.like-icon');
+    const likeCountElement = card.querySelector('.like-count');
+    const deleteBtn = card.querySelector('.delete-btn');
+    const editBtn = card.querySelector('.edit-btn');
+    
+    // Like icon click
+    likeIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleLike(playlist, likeIcon, likeCountElement);
+    });
+    
+    // Delete button click
+    deleteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      deletePlaylist(playlist.id);
+    });
+    
+    // Edit button click
+    editBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openEditForm(playlist);
+    });
+    
+    // Card click (open modal)
+    card.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('like-icon') && 
+          !e.target.classList.contains('delete-btn') &&
+          !e.target.classList.contains('edit-btn')) {
+        openModal(playlist);
+      }
+    });
+  });
+}
+
+// Setup event listeners for search, sort, add
+function setupEventListeners() {
+  // Search functionality
+  const searchInput = document.getElementById('search-input');
+  const searchBtn = document.getElementById('search-btn');
+  const clearBtn = document.getElementById('clear-btn');
+  
+  searchBtn.addEventListener('click', performSearch);
+  searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') performSearch();
+  });
+  clearBtn.addEventListener('click', clearSearch);
+  
+  // Sort functionality
+  const sortSelect = document.getElementById('sort-select');
+  sortSelect.addEventListener('change', performSort);
+  
+  // Add playlist button
+  const addBtn = document.getElementById('add-playlist-btn');
+  addBtn.addEventListener('click', openAddForm);
+}
+
+// Search functionality
+function performSearch() {
+  const searchInput = document.getElementById('search-input');
+  const query = searchInput.value.toLowerCase().trim();
+  
+  if (!query) {
+    filteredPlaylists = [...allPlaylists];
+  } else {
+    filteredPlaylists = allPlaylists.filter(playlist => 
+      playlist.title.toLowerCase().includes(query) ||
+      playlist.creator.toLowerCase().includes(query)
+    );
+  }
+  
+  renderPlaylistCards(filteredPlaylists);
+}
+
+function clearSearch() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('sort-select').value = 'none';
+  filteredPlaylists = [...allPlaylists];
+  renderPlaylistCards(filteredPlaylists);
+}
+
+// Sort functionality
+function performSort() {
+  const sortSelect = document.getElementById('sort-select');
+  const sortBy = sortSelect.value;
+  
+  if (sortBy === 'none') {
+    filteredPlaylists = [...allPlaylists];
+  } else if (sortBy === 'name') {
+    filteredPlaylists.sort((a, b) => a.title.localeCompare(b.title));
+  } else if (sortBy === 'likes') {
+    filteredPlaylists.sort((a, b) => {
+      if (b.likes !== a.likes) return b.likes - a.likes;
+      return a.title.localeCompare(b.title); // Tie-breaker: name
+    });
+  } else if (sortBy === 'date') {
+    filteredPlaylists.sort((a, b) => b.id.localeCompare(a.id)); // Newer IDs first
+  }
+  
+  renderPlaylistCards(filteredPlaylists);
+}
+
+// Delete playlist
+function deletePlaylist(id) {
+  if (!confirm('Are you sure you want to delete this playlist?')) return;
+  
+  const index = allPlaylists.findIndex(p => p.id === id);
+  if (index !== -1) {
+    allPlaylists.splice(index, 1);
+    filteredPlaylists = [...allPlaylists];
+    renderPlaylistCards(filteredPlaylists);
+  }
+}
+
+// Open add form
+function openAddForm() {
+  editingPlaylistId = null;
+  document.getElementById('form-title').textContent = 'Add New Playlist';
+  document.getElementById('form-submit-btn').textContent = 'Add Playlist';
+  document.getElementById('playlist-form').reset();
+  document.getElementById('songs-container').innerHTML = '';
+  addSongInput(); // Add one empty song input
+  document.getElementById('form-modal').style.display = 'flex';
+}
+
+// Open edit form
+function openEditForm(playlist) {
+  editingPlaylistId = playlist.id;
+  document.getElementById('form-title').textContent = 'Edit Playlist';
+  document.getElementById('form-submit-btn').textContent = 'Update Playlist';
+  
+  document.getElementById('form-playlist-name').value = playlist.title;
+  document.getElementById('form-playlist-author').value = playlist.creator;
+  
+  const songsContainer = document.getElementById('songs-container');
+  songsContainer.innerHTML = '';
+  
+  playlist.songs.forEach(song => {
+    addSongInput(song);
+  });
+  
+  document.getElementById('form-modal').style.display = 'flex';
+}
+
+// Add song input fields
+function addSongInput(song = null) {
+  const container = document.getElementById('songs-container');
+  const songDiv = document.createElement('div');
+  songDiv.className = 'song-input-group';
+  
+  songDiv.innerHTML = `
+    <input type="text" placeholder="Song Title" value="${song ? song.title : ''}" class="song-title" required>
+    <input type="text" placeholder="Artist" value="${song ? song.artist : ''}" class="song-artist" required>
+    <input type="text" placeholder="Album" value="${song ? song.album : ''}" class="song-album" required>
+    <input type="text" placeholder="Duration (mm:ss)" value="${song ? song.duration : ''}" class="song-duration" required>
+    <button type="button" class="remove-song-btn">Remove</button>
+  `;
+  
+  container.appendChild(songDiv);
+  
+  songDiv.querySelector('.remove-song-btn').addEventListener('click', () => {
+    songDiv.remove();
+  });
+}
+
+// Form event listeners
+document.getElementById('add-song-btn').addEventListener('click', () => addSongInput());
+document.getElementById('form-cancel-btn').addEventListener('click', closeFormModal);
+document.getElementById('form-close-btn').addEventListener('click', closeFormModal);
+
+document.getElementById('playlist-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  savePlaylist();
+});
+
+function closeFormModal() {
+  document.getElementById('form-modal').style.display = 'none';
+}
+
+// Save playlist (add or edit)
+function savePlaylist() {
+  const title = document.getElementById('form-playlist-name').value.trim();
+  const creator = document.getElementById('form-playlist-author').value.trim();
+  
+  const songInputs = document.querySelectorAll('.song-input-group');
+  const songs = Array.from(songInputs).map(group => ({
+    title: group.querySelector('.song-title').value.trim(),
+    artist: group.querySelector('.song-artist').value.trim(),
+    album: group.querySelector('.song-album').value.trim(),
+    duration: group.querySelector('.song-duration').value.trim()
+  }));
+  
+  if (editingPlaylistId) {
+    // Edit existing
+    const playlist = allPlaylists.find(p => p.id === editingPlaylistId);
+    if (playlist) {
+      playlist.title = title;
+      playlist.creator = creator;
+      playlist.songs = songs;
+    }
+  } else {
+    // Add new
+    const newId = String(Math.max(...allPlaylists.map(p => parseInt(p.id))) + 1);
+    const newPlaylist = {
+      id: newId,
+      title,
+      creator,
+      coverImg: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop',
+      likes: 0,
+      isLikedByUser: false,
+      songs
+    };
+    allPlaylists.push(newPlaylist);
+  }
+  
+  filteredPlaylists = [...allPlaylists];
+  renderPlaylistCards(filteredPlaylists);
+  closeFormModal();
+}
+
 // Display featured playlist (for featured.html)
 async function displayFeaturedPlaylist() {
   try {
-    // Fetch data from data.json
     const response = await fetch('data/data.json');
     const data = await response.json();
     const playlists = data.playlists;
     
-    // Check if playlists exist
     if (!playlists || playlists.length === 0) {
       document.querySelector('.featured-container').innerHTML = '<p>No playlists available.</p>';
       return;
     }
     
-    // Select a random playlist
     const randomPlaylist = selectRandomPlaylist(playlists);
     
-    // Update the featured page with playlist details
     document.getElementById('featured-img').src = randomPlaylist.coverImg;
     document.getElementById('featured-img').alt = randomPlaylist.title + ' Cover';
     document.getElementById('featured-title').textContent = randomPlaylist.title;
     document.getElementById('featured-creator').textContent = 'By ' + randomPlaylist.creator;
     document.getElementById('featured-likes').textContent = 'Likes: ' + randomPlaylist.likes;
     
-    // Display songs
     const songList = document.getElementById('featured-songs');
     songList.innerHTML = '';
     
@@ -124,44 +321,36 @@ async function displayFeaturedPlaylist() {
   }
 }
 
-// Select a random playlist from array
 function selectRandomPlaylist(playlists) {
   const randomIndex = Math.floor(Math.random() * playlists.length);
   return playlists[randomIndex];
 }
 
-// Toggle like state for a playlist
 function toggleLike(playlist, likeIcon, likeCountElement) {
   if (playlist.isLikedByUser) {
-    // Branch 2: Liked → Unliked
     playlist.likes -= 1;
     playlist.isLikedByUser = false;
     likeIcon.classList.remove('liked');
     likeIcon.classList.add('unliked');
   } else {
-    // Branch 1: Unliked → Liked
     playlist.likes += 1;
     playlist.isLikedByUser = true;
     likeIcon.classList.remove('unliked');
     likeIcon.classList.add('liked');
   }
   
-  // Update the like count display
   likeCountElement.textContent = playlist.likes;
 }
 
-// Shuffle songs using Fisher-Yates algorithm
 function shuffleSongs(playlist) {
   const songs = playlist.songs;
   
-  // Fisher-Yates shuffle algorithm
   for (let i = songs.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [songs[i], songs[j]] = [songs[j], songs[i]];
   }
   
-  // Update the modal display with shuffled songs
-  const songList = document.querySelector('.modal-content ul');
+  const songList = document.querySelector('#view-modal .modal-content ul');
   songList.innerHTML = '';
   
   playlist.songs.forEach(song => {
@@ -176,10 +365,8 @@ function shuffleSongs(playlist) {
   });
 }
 
-// Get AI-generated playlist description
 async function getPlaylistDescription(playlist) {
   try {
-    // Build the song list for the prompt
     const songList = playlist.songs
       .map(song => `${song.title} by ${song.artist}`)
       .join(', ');
@@ -192,7 +379,6 @@ Songs: ${songList}
 
 Describe the playlist's vibe, theme, and mood. Do NOT list individual songs. Avoid generic phrases. Focus on the overall feeling and use case.`;
     
-    // Construct the API request
     const response = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
       {
@@ -202,7 +388,7 @@ Describe the playlist's vibe, theme, and mood. Do NOT list individual songs. Avo
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemma-4-31b-it:free",
+          model: "openrouter/free",
           messages: [
             { role: "system", content: SYSTEM_PROMPT },
             { role: "user", content: userPrompt },
@@ -225,37 +411,22 @@ Describe the playlist's vibe, theme, and mood. Do NOT list individual songs. Avo
   }
 }
 
-// Populate modal with playlist details
 function populateModal(playlist) {
-  // Update modal cover image
-  const modalImg = document.querySelector('.modal-content img');
-  modalImg.src = playlist.coverImg;
-  modalImg.alt = playlist.title + ' Cover';
+  document.getElementById('modal-img').src = playlist.coverImg;
+  document.getElementById('modal-img').alt = playlist.title + ' Cover';
+  document.getElementById('modal-title').textContent = playlist.title;
+  document.getElementById('modal-creator').textContent = 'By ' + playlist.creator;
+  document.getElementById('modal-likes').textContent = 'Likes: ' + playlist.likes;
   
-  // Update modal title
-  const modalTitle = document.querySelector('.modal-content h2');
-  modalTitle.textContent = playlist.title;
-  
-  // Update modal creator (first <p> tag after h2)
-  const modalCreator = document.querySelector('.modal-content p:nth-of-type(1)');
-  modalCreator.textContent = 'By ' + playlist.creator;
-  
-  // Update modal likes (second <p> tag)
-  const modalLikes = document.querySelector('.modal-content p:nth-of-type(2)');
-  modalLikes.textContent = 'Likes: ' + playlist.likes;
-  
-  // Clear AI description
-  const aiDescription = document.querySelector('.ai-description');
+  const aiDescription = document.querySelector('#view-modal .ai-description');
   if (aiDescription) {
     aiDescription.textContent = '';
     aiDescription.className = 'ai-description';
   }
   
-  // Clear existing songs
-  const songList = document.querySelector('.modal-content ul');
+  const songList = document.getElementById('modal-songs');
   songList.innerHTML = '';
   
-  // Add each song to the list
   playlist.songs.forEach(song => {
     const listItem = document.createElement('li');
     listItem.innerHTML = `
@@ -268,59 +439,42 @@ function populateModal(playlist) {
   });
 }
 
-// Open the modal
 function openModal(playlist) {
-  currentPlaylist = playlist; // Store current playlist for shuffle and AI
+  currentPlaylist = playlist;
   populateModal(playlist);
-  const modal = document.querySelector('.modal-overlay');
-  modal.style.display = 'flex';
+  document.getElementById('view-modal').style.display = 'flex';
 }
 
-// Close the modal
 function closeModal() {
-  const modal = document.querySelector('.modal-overlay');
-  modal.style.display = 'none';
+  document.getElementById('view-modal').style.display = 'none';
 }
 
-// Event listeners (only add if elements exist)
-if (document.querySelector('.modal-overlay')) {
-  // Close modal when clicking on overlay (outside modal content)
-  document.querySelector('.modal-overlay').addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal-overlay')) {
+// Modal event listeners
+if (document.getElementById('view-modal')) {
+  document.querySelector('#view-modal .close-btn').addEventListener('click', closeModal);
+  
+  document.getElementById('view-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'view-modal') {
       closeModal();
     }
   });
-}
-
-if (document.querySelector('.close-btn')) {
-  // Close modal when clicking close button
-  document.querySelector('.close-btn').addEventListener('click', closeModal);
-}
-
-if (document.querySelector('.shuffle-btn')) {
-  // Shuffle button functionality
+  
   document.querySelector('.shuffle-btn').addEventListener('click', () => {
     if (currentPlaylist) {
       shuffleSongs(currentPlaylist);
     }
   });
-}
-
-if (document.querySelector('.ai-description-btn')) {
-  // AI Description button functionality
+  
   document.querySelector('.ai-description-btn').addEventListener('click', async () => {
     if (!currentPlaylist) return;
     
-    const aiDescription = document.querySelector('.ai-description');
+    const aiDescription = document.querySelector('#view-modal .ai-description');
     
-    // Show loading state
     aiDescription.textContent = 'Generating description...';
     aiDescription.className = 'ai-description loading';
     
-    // Get description from AI
     const description = await getPlaylistDescription(currentPlaylist);
     
-    // Display the description
     if (description === FAILURE_MESSAGE) {
       aiDescription.className = 'ai-description error';
     } else {
@@ -329,4 +483,3 @@ if (document.querySelector('.ai-description-btn')) {
     aiDescription.textContent = description;
   });
 }
-

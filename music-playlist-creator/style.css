@@ -1,82 +1,245 @@
-/* Basic body styling - light gray background, removes default margins */
+/* Black & Gold Theme - Luxurious and Modern */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Georgia', 'Times New Roman', serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f8f8;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    color: #d4af37;
+    min-height: 100vh;
 }
 
-/* Header: Dark bar at top with white text, clearly separate from main content */
+/* Header: Black with gold accents */
 header {
-    background-color: #333;
-    color: white;
-    padding: 20px;
+    background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
+    color: #d4af37;
+    padding: 30px 20px;
     text-align: center;
+    border-bottom: 2px solid #d4af37;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
 }
 
 header h1 {
     margin: 0;
+    font-size: 2.5em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
 }
 
 /* Main content: Adds spacing around the playlist cards */
 main {
     padding: 40px 20px;
+    background: transparent;
+}
+
+/* Controls Container (Search and Sort) */
+.controls-container {
+    max-width: 1200px;
+    margin: 0 auto 30px auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #d4af37;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+    min-width: 300px;
+}
+
+.sort-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.sort-container label {
+    color: #d4af37;
+    font-weight: bold;
+}
+
+/* Input fields */
+#search-input,
+#sort-select {
+    padding: 10px 15px;
+    background-color: #1a1a1a;
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    color: #d4af37;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+#search-input {
+    flex: 1;
+}
+
+#search-input:focus,
+#sort-select:focus {
+    outline: none;
+    border-color: #ffd700;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+#search-input::placeholder {
+    color: #8b7355;
+}
+
+/* Buttons */
+button,
+.primary-btn,
+.secondary-btn {
+    padding: 10px 20px;
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    font-family: 'Georgia', serif;
+}
+
+#search-btn,
+#add-playlist-btn,
+.primary-btn {
+    background: linear-gradient(135deg, #d4af37 0%, #c5a028 100%);
+    color: #000;
+    border: none;
+}
+
+#search-btn:hover,
+#add-playlist-btn:hover,
+.primary-btn:hover {
+    background: linear-gradient(135deg, #ffd700 0%, #d4af37 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
+}
+
+#clear-btn,
+.secondary-btn {
+    background-color: transparent;
+    color: #d4af37;
+}
+
+#clear-btn:hover,
+.secondary-btn:hover {
+    background-color: rgba(212, 175, 55, 0.1);
+    transform: translateY(-2px);
 }
 
 /* Playlist cards container: Flexbox layout that wraps cards into rows with consistent spacing */
 .playlist-cards {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 25px;
     max-width: 1200px;
     margin: 0 auto;
+    justify-content: center;
 }
 
-/* Playlist card: White tile with border, looks clickable and distinct from background */
+/* Playlist card: Black card with gold border */
 .playlist-card {
-    background-color: white;
-    padding: 15px;
-    width: 200px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    background: linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 100%);
+    padding: 20px;
+    width: 220px;
+    border: 2px solid #d4af37;
+    border-radius: 12px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.3s;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
-/* Hover effect: Card lifts up slightly and adds shadow to show it's interactive */
+/* Hover effect: Card lifts up and glows gold */
 .playlist-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+    border-color: #ffd700;
 }
 
 .playlist-card img {
     width: 100%;
-    border-radius: 4px;
+    border-radius: 8px;
+    border: 1px solid #d4af37;
 }
 
 .playlist-card h3 {
-    margin: 10px 0 5px 0;
+    margin: 15px 0 5px 0;
+    color: #d4af37;
+    font-size: 1.2em;
+    text-align: center;
 }
 
 .playlist-card p {
     margin: 5px 0;
-    color: #666;
+    color: #b8956a;
+    text-align: center;
 }
 
-/* Footer: Matches header with dark background, frames the bottom of the page */
+/* Delete and Edit buttons */
+.delete-btn,
+.edit-btn {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #d4af37;
+    border-radius: 50%;
+    background-color: #000;
+    color: #d4af37;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.delete-btn {
+    top: 10px;
+    right: 10px;
+}
+
+.edit-btn {
+    top: 10px;
+    right: 50px;
+}
+
+.delete-btn:hover {
+    background-color: #d4af37;
+    color: #000;
+    transform: rotate(90deg);
+}
+
+.edit-btn:hover {
+    background-color: #d4af37;
+    color: #000;
+}
+
+/* Footer: Matches header with black and gold theme */
 footer {
-    background-color: #333;
-    color: white;
+    background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
+    color: #d4af37;
     text-align: center;
     padding: 20px;
-    margin-top: 40px;
+    margin-top: 60px;
+    border-top: 2px solid #d4af37;
+    box-shadow: 0 -4px 20px rgba(212, 175, 55, 0.3);
 }
 
 footer p {
     margin: 0;
+    letter-spacing: 1px;
 }
 
-/* Modal overlay: Semi-transparent dark layer that covers entire screen, centers the modal */
+/* Modal overlay: Dark overlay with gold glow */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -84,74 +247,152 @@ footer p {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.85);
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 
-/* Modal content: White card floating in center with shadow, draws focus to playlist details */
+/* Modal content: Black card with gold accents */
 .modal-content {
-    background-color: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    max-width: 500px;
-    max-height: 80vh;
+    background: linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 100%);
+    padding: 40px;
+    border-radius: 16px;
+    border: 2px solid #d4af37;
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.5);
+    max-width: 550px;
+    max-height: 85vh;
     overflow-y: auto;
     position: relative;
+    color: #d4af37;
 }
 
-/* Close button: Positioned in top-right corner of modal */
+/* Scrollbar styling for modal */
+.modal-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #0a0a0a;
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #ffd700;
+}
+
+/* Close button: Gold X button */
 .close-btn {
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 15px;
+    right: 20px;
     background: none;
     border: none;
-    font-size: 24px;
+    font-size: 28px;
     cursor: pointer;
-    color: #666;
+    color: #d4af37;
+    transition: all 0.3s;
 }
 
 .close-btn:hover {
-    color: #000;
+    color: #ffd700;
+    transform: rotate(90deg);
 }
 
 .modal-content img {
-    width: 150px;
+    width: 200px;
     display: block;
-    margin: 0 auto 15px auto;
-    border-radius: 8px;
+    margin: 0 auto 20px auto;
+    border-radius: 12px;
+    border: 2px solid #d4af37;
 }
 
 .modal-content h2 {
     text-align: center;
-    margin: 10px 0;
+    margin: 15px 0;
+    color: #ffd700;
+    font-size: 2em;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+}
+
+.modal-content h3 {
+    color: #d4af37;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    border-bottom: 2px solid #d4af37;
+    padding-bottom: 10px;
 }
 
 .modal-content > p {
     text-align: center;
-    color: #666;
-    margin: 5px 0;
+    color: #b8956a;
+    margin: 8px 0;
+    font-size: 1.1em;
 }
 
 .modal-content button {
     display: block;
     margin: 20px auto;
-    padding: 10px 20px;
-    background-color: #1db954;
-    color: white;
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #d4af37 0%, #c5a028 100%);
+    color: #000;
     border: none;
-    border-radius: 20px;
+    border-radius: 25px;
     cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: all 0.3s;
 }
 
 .modal-content button:hover {
-    background-color: #1ed760;
+    background: linear-gradient(135deg, #ffd700 0%, #d4af37 100%);
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.6);
 }
 
-/* Song list: Clean list of songs with clear separation between items */
+.shuffle-btn,
+.ai-description-btn {
+    display: inline-block !important;
+    margin: 10px 5px !important;
+}
+
+/* AI Description Styling */
+.ai-description-container {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid #d4af37;
+    border-radius: 8px;
+    min-height: 60px;
+}
+
+.ai-description {
+    color: #d4af37;
+    font-style: italic;
+    line-height: 1.6;
+}
+
+.ai-description.loading {
+    color: #b8956a;
+    animation: pulse 1.5s infinite;
+}
+
+.ai-description.error {
+    color: #ff6b6b;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Song list: Clean list with gold dividers */
 .modal-content ul {
     list-style: none;
     padding: 0;
@@ -159,8 +400,8 @@ footer p {
 }
 
 .modal-content li {
-    padding: 12px 0;
-    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 .modal-content li:last-child {
@@ -168,67 +409,77 @@ footer p {
 }
 
 .modal-content li p {
-    margin: 3px 0;
+    margin: 5px 0;
+    color: #b8956a;
 }
 
 .modal-content li strong {
-    font-size: 16px;
+    font-size: 18px;
+    color: #ffd700;
 }
 
-/* Like icon styling */
+/* Like icon styling - Gold theme */
 .like-container {
     display: flex;
     align-items: center;
-    gap: 5px;
-    margin-top: 10px;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
 }
 
 .like-icon {
-    font-size: 20px;
+    font-size: 24px;
     cursor: pointer;
     user-select: none;
-    transition: transform 0.2s;
+    transition: all 0.3s;
 }
 
 .like-icon.unliked {
-    color: #999;
+    color: #4a4a4a;
 }
 
 .like-icon.liked {
-    color: #ff0000;
+    color: #d4af37;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
 }
 
 .like-icon:hover {
-    transform: scale(1.2);
+    transform: scale(1.3);
 }
 
 .like-count {
-    font-size: 14px;
-    color: #666;
+    font-size: 16px;
+    color: #d4af37;
+    font-weight: bold;
 }
 
-/* Navigation Bar */
+/* Navigation Bar - Gold accents */
 .nav-bar {
-    margin-top: 15px;
+    margin-top: 20px;
     display: flex;
-    gap: 20px;
+    gap: 15px;
     justify-content: center;
 }
 
 .nav-bar a {
-    color: white;
+    color: #d4af37;
     text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    padding: 10px 25px;
+    border: 2px solid #d4af37;
+    border-radius: 25px;
+    transition: all 0.3s;
+    font-weight: bold;
+    letter-spacing: 1px;
 }
 
 .nav-bar a:hover {
-    background-color: #555;
+    background-color: rgba(212, 175, 55, 0.2);
+    transform: translateY(-2px);
 }
 
 .nav-bar a.active {
-    background-color: #1db954;
+    background: linear-gradient(135deg, #d4af37 0%, #c5a028 100%);
+    color: #000;
 }
 
 /* Featured Page Layout */
@@ -240,11 +491,12 @@ footer p {
 
 .featured-container {
     display: flex;
-    gap: 40px;
-    background-color: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    gap: 50px;
+    background: linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 100%);
+    padding: 40px;
+    border-radius: 16px;
+    border: 2px solid #d4af37;
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3);
 }
 
 .featured-left {
@@ -255,18 +507,23 @@ footer p {
 .featured-left img {
     width: 100%;
     max-width: 400px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    border-radius: 12px;
+    border: 2px solid #d4af37;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
 }
 
 .featured-left h2 {
-    font-size: 28px;
-    margin: 10px 0;
+    font-size: 2.2em;
+    margin: 15px 0;
+    color: #ffd700;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
 }
 
 .featured-left p {
-    color: #666;
-    margin: 5px 0;
+    color: #d4af37;
+    margin: 10px 0;
+    font-size: 1.2em;
 }
 
 .featured-right {
@@ -275,7 +532,11 @@ footer p {
 
 .featured-right h3 {
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    color: #d4af37;
+    font-size: 1.8em;
+    border-bottom: 2px solid #d4af37;
+    padding-bottom: 10px;
 }
 
 #featured-songs {
@@ -284,8 +545,8 @@ footer p {
 }
 
 #featured-songs li {
-    padding: 12px 0;
-    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 #featured-songs li:last-child {
@@ -293,16 +554,146 @@ footer p {
 }
 
 #featured-songs p {
-    margin: 3px 0;
+    margin: 5px 0;
+    color: #b8956a;
 }
 
 #featured-songs strong {
-    font-size: 16px;
+    font-size: 18px;
+    color: #ffd700;
+}
+
+/* Form Modal Styling */
+.form-modal-content {
+    max-width: 600px;
+}
+
+#form-title {
+    color: #ffd700;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #d4af37;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    background-color: #0a0a0a;
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    color: #d4af37;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #ffd700;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+/* Song input groups */
+.song-input-group {
+    background: rgba(212, 175, 55, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.song-input-group input {
+    width: 100%;
+}
+
+.remove-song-btn {
+    grid-column: 1 / -1;
+    background-color: transparent;
+    color: #ff6b6b;
+    border: 2px solid #ff6b6b;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.remove-song-btn:hover {
+    background-color: #ff6b6b;
+    color: #000;
+}
+
+#songs-container {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+#songs-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#songs-container::-webkit-scrollbar-track {
+    background: #0a0a0a;
+    border-radius: 10px;
+}
+
+#songs-container::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 10px;
+}
+
+#add-song-btn {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.form-actions button {
+    flex: 1;
+    margin: 0;
 }
 
 /* Responsive layout for smaller screens */
 @media (max-width: 768px) {
     .featured-container {
         flex-direction: column;
+    }
+    
+    .controls-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-container {
+        flex-direction: column;
+    }
+    
+    .playlist-card {
+        width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .playlist-card {
+        width: 100%;
     }
 }

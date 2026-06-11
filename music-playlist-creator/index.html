@@ -17,10 +17,31 @@
             <a href="featured.html">Featured</a>
         </nav>
     </header>
-    
+
+    <!-- Search and Controls -->
+    <div class="controls-container">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search playlists by name or author...">
+            <button id="search-btn">Search</button>
+            <button id="clear-btn">Clear</button>
+        </div>
+        
+        <div class="sort-container">
+            <label for="sort-select">Sort by:</label>
+            <select id="sort-select">
+                <option value="none">-- Select --</option>
+                <option value="name">Name (A-Z)</option>
+                <option value="likes">Likes (High to Low)</option>
+                <option value="date">Date Added (Newest First)</option>
+            </select>
+        </div>
+
+        <button id="add-playlist-btn" class="primary-btn">+ Add Playlist</button>
+    </div>
 
     <main>
         <div class="playlist-cards">
+            <!-- Playlist cards will be added dynamically -->
         </div>
     </main>
 
@@ -28,40 +49,63 @@
         <p>Music Playlist Explorer 2026</p>
     </footer>
 
-    <!-- Modal Overlay -->
-    <div class="modal-overlay">
+    <!-- View Playlist Modal -->
+    <div class="modal-overlay" id="view-modal">
         <div class="modal-content">
             <button class="close-btn">X</button>
             
-            <img src="assets/img/playlist.png" alt="Playlist Cover">
-            <h2>My Playlist</h2>
-            <p>By Prateek</p>
-            <p>Likes: 42</p>
+            <img src="assets/img/playlist.png" alt="Playlist Cover" id="modal-img">
+            <h2 id="modal-title">My Playlist</h2>
+            <p id="modal-creator">By Prateek</p>
+            <p id="modal-likes">Likes: 0</p>
             
             <button class="shuffle-btn">Shuffle</button>
+            <button class="ai-description-btn">Get Description</button>
+            
+            <div class="ai-description-container">
+                <p class="ai-description"></p>
+            </div>
             
             <h3>Songs:</h3>
-            <ul>
-                <li>
-                    <p><strong>Locked out of Heaven</strong></p>
-                    <p>Artist: Bruno Mars</p>
-                    <p>Duration: 3:52</p>
-                </li>
-                <li>
-                    <p><strong>Chicago</strong></p>
-                    <p>Artist: Micheal Jackson</p>
-                    <p>Duration: 4:00</p>
-                </li>
-                <li>
-                    <p><strong>Losing It</strong></p>
-                    <p>Artist: Fisher</p>
-                    <p>Duration: 4:07</p>
-                </li>
+            <ul id="modal-songs">
+                <!-- Songs added dynamically -->
             </ul>
         </div>
     </div>
 
-    <script src="data/data.js"></script>
-    <script src="script.js"></script>
+    <!-- Add/Edit Playlist Form Modal -->
+    <div class="modal-overlay" id="form-modal">
+        <div class="modal-content form-modal-content">
+            <button class="close-btn" id="form-close-btn">X</button>
+            
+            <h2 id="form-title">Add New Playlist</h2>
+            
+            <form id="playlist-form">
+                <div class="form-group">
+                    <label for="form-playlist-name">Playlist Name:</label>
+                    <input type="text" id="form-playlist-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="form-playlist-author">Author:</label>
+                    <input type="text" id="form-playlist-author" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Songs:</label>
+                    <div id="songs-container">
+                        <!-- Song inputs will be added here -->
+                    </div>
+                    <button type="button" id="add-song-btn" class="secondary-btn">+ Add Song</button>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="primary-btn" id="form-submit-btn">Save Playlist</button>
+                    <button type="button" class="secondary-btn" id="form-cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
 </body>
-</html>
